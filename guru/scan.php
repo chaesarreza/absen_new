@@ -10,22 +10,19 @@ if (!isset($_GET['kelas_id']) || !isset($_GET['mapel_id'])) {
     exit();
 }
 
-$kelas_id = $_GET['kelas_id'];
-$mapel_id = $_GET['mapel_id'];
+$kelas_id = (int) $_GET['kelas_id'];
+$mapel_id = (int) $_GET['mapel_id'];
 require_once '../config/db.php';
 
-$conn_db = isset($koneksi) ? $koneksi : $conn;
-
-// Ambil info Nama Kelas & Mapel
-$stmt = $conn_db->prepare("SELECT nama_kelas FROM kelas WHERE id = ?");
+$stmt = $koneksi->prepare("SELECT nama_kelas FROM kelas WHERE id = ?");
 $stmt->bind_param("i", $kelas_id);
 $stmt->execute();
-$nama_kelas = $stmt->get_result()->fetch_assoc()['nama_kelas'];
+$nama_kelas = $stmt->get_result()->fetch_assoc()['nama_kelas'] ?? 'Tidak Diketahui';
 
-$stmt = $conn_db->prepare("SELECT nama_mapel FROM mata_pelajaran WHERE id = ?");
+$stmt = $koneksi->prepare("SELECT nama_mapel FROM mata_pelajaran WHERE id = ?");
 $stmt->bind_param("i", $mapel_id);
 $stmt->execute();
-$nama_mapel = $stmt->get_result()->fetch_assoc()['nama_mapel'];
+$nama_mapel = $stmt->get_result()->fetch_assoc()['nama_mapel'] ?? 'Tidak Diketahui';
 
 $title = "Scan Absensi " . $nama_kelas;
 require_once 'templates/header.php';
@@ -37,8 +34,8 @@ require_once 'templates/header.php';
             <div class="card shadow border-0 mb-4">
                 <div class="card-body p-4">
                     <h4 class="fw-bold mb-1">Scanner Absensi</h4>
-                    <p class="text-muted mb-4 small"><?= $nama_mapel ?> - Kelas <?= $nama_kelas ?></p>
-                    
+                    <p class="text-muted mb-4 small"><?= htmlspecialchars($nama_mapel) ?> - Kelas <?= htmlspecialchars($nama_kelas) ?></p>
+
                     <div id="reader" style="width: 100%; border-radius: 10px; overflow: hidden; border: 2px solid #eee; background: #f8f9fa;"></div>
 
                     <div id="control-buttons" class="mt-3">
@@ -58,11 +55,10 @@ require_once 'templates/header.php';
 
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-white py-3 text-start">
-                    <h6 class="m-0 fw-bold"><i class="bi bi-clock-history me-2"></i>Siswa Baru Hadir</h6>
+                    <h6 class="m-0 fw-bold"><i class="bi bi-clock-history me-2"></i>Siswa Baru Absen</h6>
                 </div>
                 <div class="card-body p-0">
-                    <ul id="hadir-list" class="list-group list-group-flush text-start">
-                        </ul>
+                    <ul id="hadir-list" class="list-group list-group-flush text-start"></ul>
                 </div>
             </div>
         </div>
@@ -80,9 +76,20 @@ require_once 'templates/header.php';
                     <i class="bi bi-person-badge text-primary" style="font-size: 3.5rem;"></i>
                 </div>
                 <h4 id="namaSiswaText" class="fw-bold mb-0">Nama Siswa</h4>
-                <p id="nisSiswaText" class="text-muted mb-3">NIS: -</p>
+                <p id="nisSiswaText" class="text-muted mb-3">NISN: -</p>
                 <input type="hidden" id="barcodeSiswaHidden">
-                <button type="button" onclick="simpanAbsensi()" class="btn btn-primary btn-lg w-100 mb-2">KONFIRMASI HADIR</button>
+
+                <div class="mb-3 text-start">
+                    <label for="statusKehadiran" class="form-label fw-semibold">Status Kehadiran</label>
+                    <select id="statusKehadiran" class="form-select">
+                        <option value="Hadir" selected>Hadir</option>
+                        <option value="Alpa">Alpa</option>
+                        <option value="Izin">Ijin</option>
+                        <option value="Sakit">Sakit</option>
+                    </select>
+                </div>
+
+                <button type="button" onclick="simpanAbsensi()" class="btn btn-primary btn-lg w-100 mb-2">SIMPAN ABSENSI</button>
                 <button type="button" onclick="closeModal()" class="btn btn-link text-muted w-100">Batal / Salah Scan</button>
             </div>
         </div>
@@ -97,138 +104,103 @@ const modalElement = new bootstrap.Modal(document.getElementById('modalKonfirmas
 
 function startScanning() {
     isScanning = true;
-    html5QrCode = new Html5Qrcode("reader");
-    
-    const config = { 
-        fps: 15, 
-        qrbox: { width: 300, height: 200 },
-        aspectRatio: 1.0
-    };
+    html5QrCode = new Html5Qrcode('reader');
 
     html5QrCode.start(
-        { facingMode: "environment" }, 
-        config, 
+        { facingMode: 'environment' },
+        { fps: 15, qrbox: { width: 300, height: 200 }, aspectRatio: 1.0 },
         onScanSuccess
     ).then(() => {
         document.getElementById('btn-start').classList.add('d-none');
         document.getElementById('btn-stop').classList.remove('d-none');
         document.getElementById('scan-status').innerHTML = "<span class='text-success fw-bold'>Kamera Aktif. Dekatkan Barcode.</span>";
-    }).catch(err => {
-        alert("Kamera Error: " + err);
-    });
+    }).catch(err => alert('Kamera Error: ' + err));
 }
 
-function onScanSuccess(decodedText, decodedResult) {
-    if (isScanning) {
-        isScanning = false; // Berhenti scan agar tidak tumpang tindih
-        
-        // Console log untuk cek di inspect element browser
-        console.log("Terdeteksi: ", decodedText);
+function stopScanning() {
+    if (!html5QrCode) return;
 
-        // Langsung panggil file get_siswa
-        fetch('get_siswa_by_barcode.php?barcode=' + encodeURIComponent(decodedText))
-            .then(response => {
-                if (!response.ok) throw new Error('File get_siswa_by_barcode.php tidak ditemukan!');
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    // Isi data ke modal
-                    document.getElementById('namaSiswaText').innerText = data.nama_siswa;
-                    document.getElementById('nisSiswaText').innerText = "NIS: " + data.nis;
-                    document.getElementById('barcodeSiswaHidden').value = decodedText;
-                    
-                    // Tampilkan Modal
-                    modalElement.show();
-                } else {
-                    alert("Gagal: Barcode (" + decodedText + ") tidak terdaftar di database.");
-                    isScanning = true;
-                }
-            })
-            .catch(err => {
-                alert("Sistem Error: " + err.message);
+    html5QrCode.stop().then(() => {
+        document.getElementById('btn-stop').classList.add('d-none');
+        document.getElementById('btn-start').classList.remove('d-none');
+        document.getElementById('scan-status').innerHTML = "<span class='text-muted'>Kamera dimatikan.</span>";
+    }).catch(err => alert('Gagal mematikan kamera: ' + err));
+}
+
+function onScanSuccess(decodedText) {
+    if (!isScanning) return;
+
+    isScanning = false;
+    fetch('get_siswa_by_barcode.php?barcode=' + encodeURIComponent(decodedText))
+        .then(response => {
+            if (!response.ok) throw new Error('Status: ' + response.status);
+            return response.json();
+        })
+        .then(data => {
+            if (!data.success) {
+                alert(data.message || 'Barcode tidak terdaftar di sistem.');
                 isScanning = true;
-            });
-    }
+                return;
+            }
+
+            document.getElementById('namaSiswaText').innerText = data.nama_siswa;
+            document.getElementById('nisSiswaText').innerText = 'NISN: ' + data.nisn;
+            document.getElementById('barcodeSiswaHidden').value = decodedText;
+            document.getElementById('statusKehadiran').value = 'Hadir';
+            modalElement.show();
+        })
+        .catch(err => {
+            alert('ERROR SISTEM: ' + err.message);
+            isScanning = true;
+        });
 }
 
-// Pastikan jika modal ditutup (klik silakan/batal), scanner aktif lagi
-document.getElementById('modalKonfirmasi').addEventListener('hidden.bs.modal', function () {
+document.getElementById('modalKonfirmasi').addEventListener('hidden.bs.modal', () => {
     isScanning = true;
 });
 
-function onScanSuccess(decodedText, decodedResult) {
-    if (isScanning) {
-        isScanning = false; // Kunci scanner
-        
-        // Notifikasi pertama: Untuk memastikan barcode terbaca
-        console.log("Barcode Terbaca: " + decodedText);
-
-        // Kirim permintaan ke server
-        fetch('get_siswa_by_barcode.php?barcode=' + encodeURIComponent(decodedText))
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Gagal terhubung ke file PHP. Status: " + response.status);
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    // Masukkan data ke modal
-                    document.getElementById('namaSiswaText').innerText = data.nama_siswa;
-                    document.getElementById('nisSiswaText').innerText = "NIS: " + data.nis;
-                    document.getElementById('barcodeSiswaHidden').value = decodedText;
-                    
-                    // Tampilkan Modal
-                    modalElement.show();
-                } else {
-                    // Jika barcode tidak terdaftar
-                    alert("PERHATIAN:\n" + (data.message || "Barcode tidak terdaftar di sistem."));
-                    isScanning = true;
-                }
-            })
-            .catch(err => {
-                // Jika file PHP error atau JSON rusak
-                alert("ERROR SISTEM:\n" + err.message);
-                isScanning = true;
-            });
-    }
+function closeModal() {
+    modalElement.hide();
 }
 
-    function closeModal() {
-        modalElement.hide();
-        setTimeout(() => { isScanning = true; }, 1000);
-    }
+function simpanAbsensi() {
+    const barcode = document.getElementById('barcodeSiswaHidden').value;
+    const status = document.getElementById('statusKehadiran').value;
 
-    function simpanAbsensi() {
-        const barcode = document.getElementById('barcodeSiswaHidden').value;
+    const params = new URLSearchParams();
+    params.append('qr_code_key', barcode);
+    params.append('kelas_id', '<?= $kelas_id ?>');
+    params.append('mapel_id', '<?= $mapel_id ?>');
+    params.append('status', status);
+
+    fetch('proses_absen.php', {
+        method: 'POST',
+        body: params
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status !== 'sukses') {
+            alert(data.message || 'Gagal menyimpan absensi.');
+            modalElement.hide();
+            isScanning = true;
+            return;
+        }
+
         const hadirList = document.getElementById('hadir-list');
-        
-        const params = new URLSearchParams();
-        params.append('qr_code_key', barcode);
-        params.append('kelas_id', '<?= $kelas_id ?>');
-        params.append('mapel_id', '<?= $mapel_id ?>');
+        const li = document.createElement('li');
+        li.className = 'list-group-item d-flex justify-content-between align-items-center bg-light border-start border-success border-4';
+        li.innerHTML = `<div><i class='bi bi-check-circle-fill text-success me-2'></i><strong>${data.nama_siswa}</strong><span class='badge bg-secondary ms-2'>${status}</span></div><span class='badge bg-white text-dark border'>${new Date().toLocaleTimeString()}</span>`;
+        hadirList.prepend(li);
 
-        fetch('proses_absen.php', {
-            method: 'POST',
-            body: params
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'sukses') {
-                let li = document.createElement('li');
-                li.className = 'list-group-item d-flex justify-content-between align-items-center bg-light border-start border-success border-4';
-                li.innerHTML = `<div><i class='bi bi-check-circle-fill text-success me-2'></i><strong>${data.nama_siswa}</strong></div><span class='badge bg-white text-dark border'>${new Date().toLocaleTimeString()}</span>`;
-                hadirList.prepend(li);
-                modalElement.hide();
-                setTimeout(() => { isScanning = true; }, 1500);
-            } else {
-                alert(data.message);
-                modalElement.hide();
-                isScanning = true;
-            }
-        });
-    }
+        modalElement.hide();
+        setTimeout(() => { isScanning = true; }, 1200);
+    })
+    .catch(err => {
+        alert('Terjadi kesalahan: ' + err.message);
+        modalElement.hide();
+        isScanning = true;
+    });
+}
 </script>
 
 <style>
