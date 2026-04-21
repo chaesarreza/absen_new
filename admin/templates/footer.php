@@ -34,6 +34,13 @@
                     backdrop.classList.toggle('show');
                 });
             }
+
+            const mobileMenuTrigger = document.getElementById('mobileMenuTrigger');
+            if (mobileMenuTrigger && sidebarToggle) {
+                mobileMenuTrigger.addEventListener('click', function() {
+                    sidebarToggle.click();
+                });
+            }
             
             if (backdrop) {
                 backdrop.addEventListener('click', closeSidebar);
