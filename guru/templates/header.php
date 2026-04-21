@@ -48,3 +48,15 @@
         </div>
     </div>
 </nav>
+
+<nav class="guru-mobile-shortcuts d-lg-none" aria-label="Akses cepat guru">
+    <a href="index.php" class="guru-shortcut-link <?= basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : '' ?>">
+        <i class="bi bi-house-door-fill"></i><span>Dashboard</span>
+    </a>
+    <a href="ganti_password.php" class="guru-shortcut-link <?= basename($_SERVER['PHP_SELF']) == 'ganti_password.php' ? 'active' : '' ?>">
+        <i class="bi bi-key-fill"></i><span>Password</span>
+    </a>
+    <a href="../logout.php" class="guru-shortcut-link text-danger">
+        <i class="bi bi-box-arrow-right"></i><span>Logout</span>
+    </a>
+</nav>

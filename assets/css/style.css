@@ -849,3 +849,90 @@ body {
     transform: translateY(-2px);
     transition:.2s ease;
 }
+/* =========================================
+   MOBILE NAVIGATION OPTIMIZATION 2026
+========================================= */
+@media (max-width: 991.98px) {
+    .admin-panel .content-area {
+        padding-bottom: 5.5rem;
+    }
+
+    .mobile-admin-nav {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1055;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 0.35rem;
+        padding: 0.5rem 0.65rem calc(0.5rem + env(safe-area-inset-bottom));
+        background: rgba(255, 255, 255, 0.96);
+        border-top: 1px solid var(--border-color);
+        box-shadow: 0 -10px 22px rgba(0, 0, 0, 0.08);
+        backdrop-filter: blur(8px);
+    }
+
+    .mobile-admin-nav-link {
+        border: none;
+        background: transparent;
+        text-decoration: none;
+        color: #5f6b7a;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.2rem;
+        min-height: 52px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .mobile-admin-nav-link i {
+        font-size: 1.1rem;
+        line-height: 1;
+    }
+
+    .mobile-admin-nav-link.active,
+    .mobile-admin-nav-link:hover,
+    .mobile-admin-nav-menu:hover {
+        color: var(--green-light);
+        background: rgba(0, 121, 107, 0.08);
+    }
+
+    .guru-mobile-shortcuts {
+        position: sticky;
+        top: 0;
+        z-index: 1025;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
+        padding: 0.6rem 1rem;
+        background: var(--bg-panel);
+        border-bottom: 1px solid var(--border-color-guru);
+    }
+
+    .guru-shortcut-link {
+        text-decoration: none;
+        color: var(--text-secondary);
+        background: var(--hover-bg);
+        border: 1px solid var(--border-color-guru);
+        border-radius: 12px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        font-size: 0.82rem;
+        font-weight: 600;
+    }
+
+    .guru-shortcut-link i { font-size: 0.95rem; }
+
+    .guru-shortcut-link.active {
+        background: rgba(66, 153, 225, 0.18);
+        color: var(--text-primary);
+        border-color: rgba(66, 153, 225, 0.5);
+    }
+}

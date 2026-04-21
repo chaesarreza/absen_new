@@ -136,4 +136,22 @@ $nama_aplikasi = $result_app->fetch_assoc()['setting_value'] ?? 'Aplikasi Absens
                 </div>
             </nav>
 
+            <nav class="mobile-admin-nav d-lg-none" aria-label="Navigasi cepat admin">
+                <a class="mobile-admin-nav-link <?= basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : '' ?>" href="index.php">
+                    <i class="bi bi-grid-fill"></i><span>Home</span>
+                </a>
+                <a class="mobile-admin-nav-link <?= basename($_SERVER['PHP_SELF']) == 'siswa.php' ? 'active' : '' ?>" href="siswa.php">
+                    <i class="bi bi-people-fill"></i><span>Siswa</span>
+                </a>
+                <a class="mobile-admin-nav-link <?= basename($_SERVER['PHP_SELF']) == 'laporan_absen.php' ? 'active' : '' ?>" href="laporan_absen.php">
+                    <i class="bi bi-file-earmark-text-fill"></i><span>Laporan</span>
+                </a>
+                <a class="mobile-admin-nav-link <?= basename($_SERVER['PHP_SELF']) == 'pengaturan.php' ? 'active' : '' ?>" href="pengaturan.php">
+                    <i class="bi bi-gear-fill"></i><span>Akun</span>
+                </a>
+                <button type="button" class="mobile-admin-nav-link mobile-admin-nav-menu" id="mobileMenuTrigger" aria-label="Buka menu utama">
+                    <i class="bi bi-list"></i><span>Menu</span>
+                </button>
+            </nav>
+
             <div class="content-body">
