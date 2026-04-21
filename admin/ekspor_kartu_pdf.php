@@ -3,8 +3,7 @@ session_start();
 require_once '../config/db.php';
 require '../vendor/autoload.php';
 
-use Dompdf\Dompdf;
-use Dompdf\Options;
+use Mpdf\Mpdf;
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     die("Akses ditolak.");
@@ -126,17 +125,15 @@ $html .= '
 </body>
 </html>';
 
-// Inisialisasi Dompdf
-$options = new Options();
-$options->set('isHtml5ParserEnabled', true);
-$options->set('isRemoteEnabled', true);
-$dompdf = new Dompdf($options);
+// Inisialisasi mPDF
+$mpdf = new Mpdf([
+    'format' => 'A4',
+    'orientation' => 'P'
+]);
 
-$dompdf->loadHtml($html);
-$dompdf->setPaper('A4', 'portrait');
-$dompdf->render();
+$mpdf->WriteHTML($html);
 
 $fileName = 'Daftar_QR_Code_' . str_replace(' ', '_', $nama_kelas) . '.pdf';
-$dompdf->stream($fileName, ["Attachment" => 1]);
+$mpdf->Output($fileName, \Mpdf\Output\Destination::DOWNLOAD);
 
 ?>
