@@ -24,12 +24,24 @@ while ($row = $result_all_jadwal->fetch_assoc()) {
         $active_kelas_id = $row['kelas_id'];
     }
 }
+$total_kelas = count($jadwal_per_kelas);
+$total_jadwal = array_sum(array_map('count', $jadwal_per_kelas));
+
 require_once 'templates/header.php';
 ?>
 
-<div class="guru-workspace">
-    <aside class="schedule-list mobile-collapsible">
-        <h3 class="mt-2">Menu Utama</h3>
+<div class="guru-workspace guru-workspace-premium">
+    <aside class="schedule-list mobile-collapsible premium-mobile-menu" id="menuGuruMobile">
+        <div class="premium-mobile-head d-lg-none">
+            <p class="premium-overline mb-1">Guru Workspace</p>
+            <h2 class="mb-2">Halo, <?= htmlspecialchars($_SESSION['nama_lengkap']); ?></h2>
+            <div class="premium-mobile-stats">
+                <span><i class="bi bi-diagram-3 me-1"></i><?= $total_kelas; ?> Kelas</span>
+                <span><i class="bi bi-journal-check me-1"></i><?= $total_jadwal; ?> Jadwal</span>
+            </div>
+        </div>
+
+        <h3 class="mt-2"><i class="bi bi-grid-1x2-fill me-2"></i>Menu Utama</h3>
         <a href="index.php?page=dashboard" class="schedule-link <?= ($page == 'dashboard' && !$active_jadwal_id) ? 'active' : ''; ?>">
             <span class="subject-name"><i class="bi bi-house-door me-2"></i>Dashboard</span>
         </a>
@@ -37,7 +49,7 @@ require_once 'templates/header.php';
             <span class="subject-name"><i class="bi bi-file-earmark-text me-2"></i>Laporan Absensi</span>
         </a>
 
-        <h3 class="mt-4">Jadwal Mengajar</h3>
+        <h3 class="mt-4"><i class="bi bi-calendar-week me-2"></i>Jadwal Mengajar</h3>
         <div class="accordion accordion-flush schedule-accordion" id="scheduleAccordion">
             <?php foreach ($jadwal_per_kelas as $nama_kelas => $jadwal_items): ?>
                 <?php
@@ -66,7 +78,14 @@ require_once 'templates/header.php';
         </div>
     </aside>
 
-    <main class="main-content">
+    <main class="main-content premium-main-content">
+        <section class="mobile-focus-hero d-lg-none">
+            <div>
+                <p class="mb-1">Ringkas hari ini</p>
+                <strong><?= date('d M Y'); ?></strong>
+            </div>
+            <a href="#menuGuruMobile" class="btn btn-sm btn-outline-primary">Buka Menu</a>
+        </section>
         <?php
         // PERUBAHAN DI SINI: Tanggal sekarang diambil dari URL, atau default hari ini
         $tanggal_terpilih = $_GET['tanggal'] ?? date('Y-m-d');

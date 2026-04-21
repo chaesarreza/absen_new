@@ -936,3 +936,126 @@ body {
         border-color: rgba(66, 153, 225, 0.5);
     }
 }
+
+/* =========================================
+   GURU MOBILE PREMIUM REFRESH 2026.04
+========================================= */
+@media (max-width: 991.98px) {
+    .guru-workspace-premium {
+        padding: 0.75rem 0.75rem 5.75rem !important;
+        gap: 0.85rem !important;
+    }
+
+    .premium-mobile-menu {
+        background: linear-gradient(165deg, rgba(66, 153, 225, 0.16), rgba(45, 55, 72, 0.92));
+        border: 1px solid rgba(160, 174, 192, 0.25);
+        box-shadow: 0 18px 40px rgba(10, 14, 25, 0.32);
+        max-height: none;
+    }
+
+    .premium-mobile-head {
+        border: 1px solid rgba(160, 174, 192, 0.28);
+        border-radius: 16px;
+        padding: 0.9rem 1rem;
+        margin-bottom: 1rem;
+        background: rgba(15, 23, 42, 0.48);
+    }
+
+    .premium-overline {
+        text-transform: uppercase;
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        color: var(--text-secondary);
+    }
+
+    .premium-mobile-head h2 {
+        font-size: 1.08rem;
+        line-height: 1.35;
+    }
+
+    .premium-mobile-stats {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .premium-mobile-stats span {
+        display: inline-flex;
+        align-items: center;
+        border: 1px solid rgba(66, 153, 225, 0.45);
+        border-radius: 999px;
+        padding: 0.32rem 0.7rem;
+        font-size: 0.76rem;
+        font-weight: 600;
+        background: rgba(66, 153, 225, 0.14);
+    }
+
+    .premium-mobile-menu h3 {
+        display: flex;
+        align-items: center;
+        font-size: 0.9rem;
+        letter-spacing: 0.03em;
+        margin-bottom: 0.7rem;
+    }
+
+    .premium-mobile-menu .schedule-link {
+        display: flex;
+        align-items: center;
+        border: 1px solid transparent;
+        background: rgba(255, 255, 255, 0.02);
+    }
+
+    .premium-mobile-menu .schedule-link.active {
+        border-color: rgba(255, 255, 255, 0.28);
+        background: linear-gradient(135deg, rgba(66, 153, 225, 0.9), rgba(49, 130, 206, 0.86));
+        box-shadow: 0 12px 22px rgba(49, 130, 206, 0.45);
+    }
+
+    .premium-main-content {
+        border-radius: 20px !important;
+        box-shadow: 0 12px 34px rgba(15, 23, 42, 0.28);
+    }
+
+    .mobile-focus-hero {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        margin-bottom: 0.95rem;
+        padding: 0.72rem 0.8rem;
+        border: 1px solid var(--border-color-guru);
+        border-radius: 14px;
+        background: linear-gradient(150deg, rgba(66, 153, 225, 0.14), rgba(26, 32, 44, 0.35));
+    }
+
+    .mobile-focus-hero p {
+        font-size: 0.75rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--text-secondary);
+    }
+
+    .mobile-focus-hero strong {
+        font-size: 0.98rem;
+        letter-spacing: 0.01em;
+    }
+
+    .guru-mobile-shortcuts {
+        position: fixed;
+        left: 0.6rem;
+        right: 0.6rem;
+        bottom: 0.55rem;
+        border: 1px solid rgba(160, 174, 192, 0.28);
+        border-radius: 18px;
+        padding: 0.55rem 0.65rem calc(0.55rem + env(safe-area-inset-bottom));
+        background: rgba(26, 32, 44, 0.92);
+        backdrop-filter: blur(12px);
+        box-shadow: 0 14px 30px rgba(2, 6, 23, 0.45);
+    }
+
+    .guru-shortcut-link {
+        min-height: 46px;
+        border-radius: 13px;
+        background: rgba(255, 255, 255, 0.03);
+    }
+}
