@@ -1,28 +1,30 @@
 <?php
-error_reporting(0); // Matikan pesan error agar JSON tidak rusak
+session_start();
 require_once '../config/db.php';
-
-// Pastikan menggunakan variabel $koneksi sesuai config/db.php Anda
-$db = isset($koneksi) ? $koneksi : $conn;
-
 header('Content-Type: application/json');
 
-$barcode = isset($_GET['barcode']) ? mysqli_real_escape_string($db, $_GET['barcode']) : '';
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'guru') {
+    echo json_encode(['success' => false, 'message' => 'Akses ditolak.']);
+    exit;
+}
 
-if (empty($barcode)) {
+if (!isset($_GET['barcode']) || trim($_GET['barcode']) === '') {
     echo json_encode(['success' => false, 'message' => 'Barcode tidak terbaca']);
     exit;
 }
 
-// Tambahkan NIS ke dalam query agar tidak 'Unknown column'
-$query = mysqli_query($db, "SELECT nama_siswa, nis FROM siswa WHERE barcode = '$barcode' LIMIT 1");
-$data = mysqli_fetch_assoc($query);
+$barcode = trim($_GET['barcode']);
+$stmt = $koneksi->prepare("SELECT nama_siswa, nisn FROM siswa WHERE qr_code_key = ? LIMIT 1");
+$stmt->bind_param("s", $barcode);
+$stmt->execute();
+$result = $stmt->get_result();
+$data = $result->fetch_assoc();
 
 if ($data) {
     echo json_encode([
-        'success' => true, 
-        'nama_siswa' => $data['nama_siswa'], 
-        'nis' => $data['nis']
+        'success' => true,
+        'nama_siswa' => $data['nama_siswa'],
+        'nisn' => $data['nisn']
     ]);
 } else {
     echo json_encode(['success' => false, 'message' => 'Barcode tidak terdaftar']);
