@@ -3,8 +3,7 @@ session_start();
 require_once '../config/db.php';
 require '../vendor/autoload.php';
 
-use Dompdf\Dompdf;
-use Dompdf\Options;
+use Mpdf\Mpdf;
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'guru') { die("Akses ditolak."); }
 
@@ -70,13 +69,11 @@ if (!empty($siswa_list)) {
 } else { $html .= '<tr><td colspan="'.($days_in_month + 2).'">Tidak ada data.</td></tr>'; }
 $html .= '</tbody></table></body></html>';
 
-$options = new Options();
-$options->set('isHtml5ParserEnabled', true);
-$options->set('isRemoteEnabled', true);
-$dompdf = new Dompdf($options);
-$dompdf->loadHtml($html);
-$dompdf->setPaper('A4', 'landscape');
-$dompdf->render();
+$mpdf = new Mpdf([
+    'format' => 'A4',
+    'orientation' => 'L'
+]);
+$mpdf->WriteHTML($html);
 $fileName = "Absensi_{$nama_kelas}_{$nama_mapel}_{$nama_bulan}_{$filter_tahun}.pdf";
-$dompdf->stream($fileName, ["Attachment" => 1]);
+$mpdf->Output($fileName, \Mpdf\Output\Destination::DOWNLOAD);
 ?>
