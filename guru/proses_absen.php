@@ -14,7 +14,13 @@ if (isset($_POST['qr_code_key']) && isset($_POST['kelas_id']) && isset($_POST['m
     $qr_code_key = $_POST['qr_code_key'];
     $id_kelas_absen = $_POST['kelas_id'];
     $id_mapel_absen = $_POST['mapel_id']; // Ambil mapel_id
+    $status_hadir = $_POST['status'] ?? 'Hadir';
     $id_guru = $_SESSION['user_id'];
+
+    if (!in_array($status_hadir, ['Hadir', 'Sakit', 'Izin', 'Alpa'])) {
+        echo json_encode(['status' => 'gagal', 'message' => 'Status absensi tidak valid.']);
+        exit();
+    }
 
     $stmt_siswa = $koneksi->prepare("SELECT id, nama_siswa, kelas_id FROM siswa WHERE qr_code_key = ?");
     $stmt_siswa->bind_param("s", $qr_code_key);
@@ -39,13 +45,12 @@ if (isset($_POST['qr_code_key']) && isset($_POST['kelas_id']) && isset($_POST['m
             if ($stmt_cek_absen->get_result()->num_rows > 0) {
                 $response = ['status' => 'gagal', 'message' => $nama_siswa . ' sudah diabsen untuk mata pelajaran ini hari ini.'];
             } else {
-                $status_hadir = 'Hadir';
                 // Tambahkan mapel_id ke query INSERT
                 $stmt_insert = $koneksi->prepare("INSERT INTO absensi (siswa_id, tanggal, status, mapel_id, dicatat_oleh) VALUES (?, ?, ?, ?, ?)");
                 $stmt_insert->bind_param("issii", $id_siswa, $tanggal_hari_ini, $status_hadir, $id_mapel_absen, $id_guru);
                 
                 if ($stmt_insert->execute()) {
-                    $response = ['status' => 'sukses', 'message' => 'Hadir! ' . $nama_siswa, 'nama_siswa' => $nama_siswa, 'id' => $id_siswa];
+                    $response = ['status' => 'sukses', 'message' => $status_hadir . '! ' . $nama_siswa, 'nama_siswa' => $nama_siswa, 'status_absen' => $status_hadir, 'id' => $id_siswa];
                 } else {
                     $response = ['status' => 'gagal', 'message' => 'Gagal menyimpan data absensi.'];
                 }

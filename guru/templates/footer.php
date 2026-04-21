@@ -22,11 +22,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     const savedTheme = localStorage.getItem('theme') || 'dark';
     applyTheme(savedTheme);
-    themeToggle.addEventListener('click', function() {
+    const toggleTheme = function() {
         let newTheme = body.classList.contains('light-mode') ? 'dark' : 'light';
         applyTheme(newTheme);
         localStorage.setItem('theme', newTheme);
-    });
+    };
+
+    themeToggle.addEventListener('click', toggleTheme);
+
+    const mobileThemeToggle = document.getElementById('mobileThemeToggle');
+    if (mobileThemeToggle) {
+        mobileThemeToggle.addEventListener('click', toggleTheme);
+    }
 });
 </script>
 </body>

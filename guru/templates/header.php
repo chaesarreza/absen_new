@@ -48,3 +48,26 @@
         </div>
     </div>
 </nav>
+
+<div class="guru-mobile-hub d-lg-none" aria-label="Akses cepat guru">
+    <div class="guru-mobile-hub-head">
+        <span>Quick Access</span>
+        <button type="button" id="mobileThemeToggle" class="guru-mobile-theme-btn">
+            <i class="bi bi-circle-half"></i> Tema
+        </button>
+    </div>
+    <div class="guru-mobile-shortcuts">
+        <a href="index.php" class="guru-shortcut-link <?= basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : '' ?>">
+            <i class="bi bi-house-door-fill"></i><span>Dashboard</span>
+        </a>
+        <a href="ganti_password.php" class="guru-shortcut-link <?= basename($_SERVER['PHP_SELF']) == 'ganti_password.php' ? 'active' : '' ?>">
+            <i class="bi bi-key-fill"></i><span>Password</span>
+        </a>
+        <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'}); return false;" class="guru-shortcut-link">
+            <i class="bi bi-arrow-up-circle-fill"></i><span>Ke Atas</span>
+        </a>
+        <a href="../logout.php" class="guru-shortcut-link text-danger">
+            <i class="bi bi-box-arrow-right"></i><span>Logout</span>
+        </a>
+    </div>
+</div>

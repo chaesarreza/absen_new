@@ -849,3 +849,213 @@ body {
     transform: translateY(-2px);
     transition:.2s ease;
 }
+/* =========================================
+   MOBILE NAVIGATION OPTIMIZATION 2026
+========================================= */
+@media (max-width: 991.98px) {
+    .admin-panel .content-area {
+        padding-bottom: 5.5rem;
+    }
+
+    .mobile-admin-nav {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1055;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 0.35rem;
+        padding: 0.5rem 0.65rem calc(0.5rem + env(safe-area-inset-bottom));
+        background: rgba(255, 255, 255, 0.96);
+        border-top: 1px solid var(--border-color);
+        box-shadow: 0 -10px 22px rgba(0, 0, 0, 0.08);
+        backdrop-filter: blur(8px);
+    }
+
+    .mobile-admin-nav-link {
+        border: none;
+        background: transparent;
+        text-decoration: none;
+        color: #5f6b7a;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.2rem;
+        min-height: 52px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .mobile-admin-nav-link i {
+        font-size: 1.1rem;
+        line-height: 1;
+    }
+
+    .mobile-admin-nav-link.active,
+    .mobile-admin-nav-link:hover,
+    .mobile-admin-nav-menu:hover {
+        color: var(--green-light);
+        background: rgba(0, 121, 107, 0.08);
+    }
+
+    .guru-mobile-shortcuts {
+        position: sticky;
+        top: 0;
+        z-index: 1025;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
+        padding: 0.6rem 1rem;
+        background: var(--bg-panel);
+        border-bottom: 1px solid var(--border-color-guru);
+    }
+
+    .guru-shortcut-link {
+        text-decoration: none;
+        color: var(--text-secondary);
+        background: var(--hover-bg);
+        border: 1px solid var(--border-color-guru);
+        border-radius: 12px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        font-size: 0.82rem;
+        font-weight: 600;
+    }
+
+    .guru-shortcut-link i { font-size: 0.95rem; }
+
+    .guru-shortcut-link.active {
+        background: rgba(66, 153, 225, 0.18);
+        color: var(--text-primary);
+        border-color: rgba(66, 153, 225, 0.5);
+    }
+}
+
+/* =========================================
+   PREMIUM MOBILE UX REFINEMENT
+========================================= */
+@media (max-width: 991.98px) {
+    .mobile-admin-nav { display: none !important; }
+
+    .admin-panel .content-area {
+        padding: 0.85rem 0.9rem 1.2rem;
+    }
+
+    .mobile-admin-hub {
+        margin: 0 0 0.95rem;
+        padding: 0.85rem;
+        border-radius: 16px;
+        background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(242,247,246,0.9));
+        border: 1px solid rgba(0, 82, 73, 0.08);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    .mobile-admin-hub-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.75rem;
+    }
+
+    .mobile-admin-hub-title {
+        font-size: 0.86rem;
+        font-weight: 700;
+        color: #1f3a37;
+        letter-spacing: 0.02em;
+    }
+
+    .mobile-admin-menu-btn {
+        border: 1px solid rgba(0, 121, 107, 0.2);
+        background: rgba(0, 121, 107, 0.08);
+        color: #01685d;
+        border-radius: 10px;
+        padding: 0.35rem 0.65rem;
+        font-weight: 700;
+        font-size: 0.78rem;
+    }
+
+    .mobile-admin-chip-row {
+        display: flex;
+        gap: 0.55rem;
+        overflow-x: auto;
+        scrollbar-width: none;
+        padding-bottom: 0.25rem;
+    }
+    .mobile-admin-chip-row::-webkit-scrollbar { display: none; }
+
+    .mobile-admin-chip {
+        flex: 0 0 auto;
+        text-decoration: none;
+        border: 1px solid #dce8e5;
+        background: #ffffff;
+        color: #35514d;
+        border-radius: 999px;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.76rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        white-space: nowrap;
+    }
+
+    .mobile-admin-chip.active {
+        background: linear-gradient(135deg, #00796b, #009688);
+        color: #fff;
+        border-color: transparent;
+        box-shadow: 0 8px 18px rgba(0, 121, 107, 0.26);
+    }
+
+    .guru-mobile-shortcuts { display: none; }
+
+    .guru-mobile-hub {
+        padding: 0.75rem 1rem 0.85rem;
+        border-bottom: 1px solid var(--border-color-guru);
+        background: linear-gradient(180deg, rgba(26,32,44,0.96), rgba(26,32,44,0.88));
+    }
+
+    .guru-mobile-hub-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: var(--text-secondary);
+        font-size: 0.78rem;
+        margin-bottom: 0.65rem;
+        letter-spacing: 0.03em;
+    }
+
+    .guru-mobile-theme-btn {
+        border: 1px solid var(--border-color-guru);
+        background: var(--hover-bg);
+        color: var(--text-primary);
+        border-radius: 10px;
+        font-size: 0.76rem;
+        font-weight: 700;
+        padding: 0.35rem 0.55rem;
+    }
+
+    .guru-mobile-hub .guru-mobile-shortcuts {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 0.45rem;
+    }
+
+    .guru-mobile-hub .guru-shortcut-link {
+        flex-direction: column;
+        min-height: 58px;
+        gap: 0.2rem;
+        font-size: 0.7rem;
+        border-radius: 12px;
+        padding: 0.45rem 0.25rem;
+    }
+
+    .guru-mobile-hub .guru-shortcut-link i {
+        font-size: 1rem;
+    }
+}

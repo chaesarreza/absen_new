@@ -136,4 +136,23 @@ $nama_aplikasi = $result_app->fetch_assoc()['setting_value'] ?? 'Aplikasi Absens
                 </div>
             </nav>
 
+            <div class="mobile-admin-hub d-lg-none" aria-label="Navigasi cepat admin">
+                <div class="mobile-admin-hub-head">
+                    <span class="mobile-admin-hub-title">Akses Cepat</span>
+                    <button type="button" class="mobile-admin-menu-btn" id="mobileMenuTrigger" aria-label="Buka menu utama">
+                        <i class="bi bi-list"></i> Menu
+                    </button>
+                </div>
+                <div class="mobile-admin-chip-row">
+                    <a class="mobile-admin-chip <?= basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : '' ?>" href="index.php"><i class="bi bi-grid-fill"></i>Dashboard</a>
+                    <a class="mobile-admin-chip <?= basename($_SERVER['PHP_SELF']) == 'analitik.php' ? 'active' : '' ?>" href="analitik.php"><i class="bi bi-graph-up-arrow"></i>Analitik</a>
+                    <a class="mobile-admin-chip <?= basename($_SERVER['PHP_SELF']) == 'guru.php' ? 'active' : '' ?>" href="guru.php"><i class="bi bi-person-video3"></i>Guru</a>
+                    <a class="mobile-admin-chip <?= basename($_SERVER['PHP_SELF']) == 'kelas.php' ? 'active' : '' ?>" href="kelas.php"><i class="bi bi-building"></i>Kelas</a>
+                    <a class="mobile-admin-chip <?= basename($_SERVER['PHP_SELF']) == 'siswa.php' ? 'active' : '' ?>" href="siswa.php"><i class="bi bi-people-fill"></i>Siswa</a>
+                    <a class="mobile-admin-chip <?= basename($_SERVER['PHP_SELF']) == 'mapel.php' ? 'active' : '' ?>" href="mapel.php"><i class="bi bi-journal-text"></i>Mapel</a>
+                    <a class="mobile-admin-chip <?= basename($_SERVER['PHP_SELF']) == 'laporan_absen.php' ? 'active' : '' ?>" href="laporan_absen.php"><i class="bi bi-file-earmark-text-fill"></i>Laporan</a>
+                    <a class="mobile-admin-chip <?= basename($_SERVER['PHP_SELF']) == 'pengaturan.php' ? 'active' : '' ?>" href="pengaturan.php"><i class="bi bi-gear-fill"></i>Pengaturan</a>
+                </div>
+            </div>
+
             <div class="content-body">
