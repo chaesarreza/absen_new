@@ -123,6 +123,7 @@ function startScanning() {
         document.getElementById('btn-stop').classList.remove('d-none');
         document.getElementById('scan-status').innerHTML = "<span class='text-success fw-bold'>Kamera Aktif. Dekatkan Barcode.</span>";
     }).catch(err => alert('Kamera Error: ' + err));
+codex/fix-error-500-on-pdf-export-6atvd1
 }
 
 function stopScanning() {
@@ -199,18 +200,98 @@ function simpanAbsensi() {
             return;
         }
 
+}
+
+function stopScanning() {
+    if (!html5QrCode) return;
+
+    html5QrCode.stop().then(() => {
+        document.getElementById('btn-stop').classList.add('d-none');
+        document.getElementById('btn-start').classList.remove('d-none');
+        document.getElementById('scan-status').innerHTML = "<span class='text-muted'>Kamera dimatikan.</span>";
+    }).catch(err => alert('Gagal mematikan kamera: ' + err));
+}
+
+function onScanSuccess(decodedText) {
+    if (!isScanning) return;
+
+    isScanning = false;
+    fetch('get_siswa_by_barcode.php?barcode=' + encodeURIComponent(decodedText))
+        .then(response => {
+            if (!response.ok) throw new Error('Status: ' + response.status);
+            return response.json();
+        })
+        .then(data => {
+            if (!data.success) {
+                alert(data.message || 'Barcode tidak terdaftar di sistem.');
+                isScanning = true;
+                return;
+            }
+
+            document.getElementById('namaSiswaText').innerText = data.nama_siswa;
+            document.getElementById('nisSiswaText').innerText = 'NISN: ' + data.nisn;
+            document.getElementById('barcodeSiswaHidden').value = decodedText;
+            document.getElementById('statusKehadiran').value = 'Hadir';
+            modalElement.show();
+        })
+        .catch(err => {
+            alert('ERROR SISTEM: ' + err.message);
+            isScanning = true;
+        });
+}
+
+document.getElementById('modalKonfirmasi').addEventListener('hidden.bs.modal', () => {
+    isScanning = true;
+});
+
+function closeModal() {
+    modalElement.hide();
+}
+
+function simpanAbsensi() {
+    const barcode = document.getElementById('barcodeSiswaHidden').value;
+    const status = document.getElementById('statusKehadiran').value;
+
+    const params = new URLSearchParams();
+    params.append('qr_code_key', barcode);
+    params.append('kelas_id', '<?= $kelas_id ?>');
+    params.append('mapel_id', '<?= $mapel_id ?>');
+    params.append('status', status);
+
+    fetch('proses_absen.php', {
+        method: 'POST',
+        body: params
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status !== 'sukses') {
+            alert(data.message || 'Gagal menyimpan absensi.');
+            modalElement.hide();
+            isScanning = true;
+            return;
+        }
+
+ main
         const hadirList = document.getElementById('hadir-list');
         const li = document.createElement('li');
         li.className = 'list-group-item d-flex justify-content-between align-items-center bg-light border-start border-success border-4';
         li.innerHTML = `<div><i class='bi bi-check-circle-fill text-success me-2'></i><strong>${data.nama_siswa}</strong><span class='badge bg-secondary ms-2'>${status}</span></div><span class='badge bg-white text-dark border'>${new Date().toLocaleTimeString()}</span>`;
         hadirList.prepend(li);
 
+ codex/fix-error-500-on-pdf-export-6atvd1
         getModalElement().hide();
+
+        modalElement.hide();
+ main
         setTimeout(() => { isScanning = true; }, 1200);
     })
     .catch(err => {
         alert('Terjadi kesalahan: ' + err.message);
+ codex/fix-error-500-on-pdf-export-6atvd1
         getModalElement().hide();
+
+        modalElement.hide();
+main
         isScanning = true;
     });
 }
